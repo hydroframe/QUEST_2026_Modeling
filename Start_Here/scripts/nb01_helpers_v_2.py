@@ -138,16 +138,18 @@ def plot_precip_temp_vs_flow(stonybrook_df, ucrb_df):
     x = stonybrook_df["precip_in"]
     y = stonybrook_df["flow_af"]
     slope_sb_p, intercept_sb_p = np.polyfit(x, y, 1)
-    r2_sb_p = np.corrcoef(x, y)[0, 1] ** 2
+    r_sb_p = np.corrcoef(x, y)[0, 1]
+    r2_sb_p = r_sb_p ** 2
 
     ax_sb_p = plt.subplot(2, 2, 1)
     ax_sb_p.scatter(x, y, s=10)
     ax_sb_p.plot(x, slope_sb_p * x + intercept_sb_p, color="red")
     ax_sb_p.set_title("Stony Brook: Monthly Precipitation vs Flow", fontsize=TITLE_FONTSIZE)
+    ax_sb_p.set_xlabel("Precip (in)", fontsize=LABEL_FONTSIZE)
     ax_sb_p.set_ylabel("Flow (AF)", fontsize=LABEL_FONTSIZE)
     ax_sb_p.tick_params(labelsize=TICK_FONTSIZE)
     ax_sb_p.text(
-        0.05, 0.95, f"R² = {r2_sb_p:.2f}",
+        0.05, 0.95, f"R² = {r2_sb_p:.2f}\nR = {r_sb_p:.2f}",
         transform=ax_sb_p.transAxes, fontsize=12, va="top",
         bbox=dict(boxstyle="round", facecolor="white", alpha=0.8),
     )
@@ -158,15 +160,18 @@ def plot_precip_temp_vs_flow(stonybrook_df, ucrb_df):
     x = ucrb_df["precip_in"]
     y = ucrb_df["flow_af"]
     slope_ucrb_p, intercept_ucrb_p = np.polyfit(x, y, 1)
-    r2_ucrb_p = np.corrcoef(x, y)[0, 1] ** 2
+    r_ucrb_p = np.corrcoef(x, y)[0, 1]
+    r2_ucrb_p = r_ucrb_p ** 2
 
     ax_ucrb_p = plt.subplot(2, 2, 2)
     ax_ucrb_p.scatter(x, y, s=10)
     ax_ucrb_p.plot(x, slope_ucrb_p * x + intercept_ucrb_p, color="red")
     ax_ucrb_p.set_title("UCRB: Monthly Precipitation vs Flow", fontsize=TITLE_FONTSIZE)
+    ax_ucrb_p.set_xlabel("Precip (in)", fontsize=LABEL_FONTSIZE)
+    ax_ucrb_p.set_ylabel("Flow (AF)", fontsize=LABEL_FONTSIZE)
     ax_ucrb_p.tick_params(labelsize=TICK_FONTSIZE)
     ax_ucrb_p.text(
-        0.05, 0.95, f"R² = {r2_ucrb_p:.2f}",
+        0.05, 0.95, f"R² = {r2_ucrb_p:.2f}\nR = {r_ucrb_p:.2f}",
         transform=ax_ucrb_p.transAxes, fontsize=12, va="top",
         bbox=dict(boxstyle="round", facecolor="white", alpha=0.8),
     )
@@ -177,7 +182,8 @@ def plot_precip_temp_vs_flow(stonybrook_df, ucrb_df):
     x = stonybrook_df["temp_F"]
     y = stonybrook_df["flow_af"]
     slope_sb_t, intercept_sb_t = np.polyfit(x, y, 1)
-    r2_sb_t = np.corrcoef(x, y)[0, 1] ** 2
+    r_sb_t = np.corrcoef(x, y)[0, 1]
+    r2_sb_t = r_sb_t ** 2
 
     ax_sb_t = plt.subplot(2, 2, 3)
     ax_sb_t.scatter(x, y, s=10)
@@ -187,7 +193,7 @@ def plot_precip_temp_vs_flow(stonybrook_df, ucrb_df):
     ax_sb_t.set_ylabel("Flow (AF)", fontsize=LABEL_FONTSIZE)
     ax_sb_t.tick_params(labelsize=TICK_FONTSIZE)
     ax_sb_t.text(
-        0.05, 0.95, f"R² = {r2_sb_t:.2f}",
+        0.05, 0.95, f"R² = {r2_sb_t:.2f}\nR = {r_sb_t:.2f}",
         transform=ax_sb_t.transAxes, fontsize=12, va="top",
         bbox=dict(boxstyle="round", facecolor="white", alpha=0.8),
     )
@@ -198,16 +204,18 @@ def plot_precip_temp_vs_flow(stonybrook_df, ucrb_df):
     x = ucrb_df["temp_F"]
     y = ucrb_df["flow_af"]
     slope_ucrb_t, intercept_ucrb_t = np.polyfit(x, y, 1)
-    r2_ucrb_t = np.corrcoef(x, y)[0, 1] ** 2
+    r_ucrb_t = np.corrcoef(x, y)[0, 1]
+    r2_ucrb_t = r_ucrb_t ** 2
 
     ax_ucrb_t = plt.subplot(2, 2, 4)
     ax_ucrb_t.scatter(x, y, s=10)
     ax_ucrb_t.plot(x, slope_ucrb_t * x + intercept_ucrb_t, color="red")
     ax_ucrb_t.set_title("UCRB: Monthly Temperature vs Flow", fontsize=TITLE_FONTSIZE)
     ax_ucrb_t.set_xlabel("Temp (F)", fontsize=LABEL_FONTSIZE)
+    ax_ucrb_t.set_ylabel("Flow (AF)", fontsize=LABEL_FONTSIZE)
     ax_ucrb_t.tick_params(labelsize=TICK_FONTSIZE)
     ax_ucrb_t.text(
-        0.05, 0.95, f"R² = {r2_ucrb_t:.2f}",
+        0.05, 0.95, f"R² = {r2_ucrb_t:.2f}\nR = {r_ucrb_t:.2f}",
         transform=ax_ucrb_t.transAxes, fontsize=12, va="top",
         bbox=dict(boxstyle="round", facecolor="white", alpha=0.8),
     )
@@ -232,7 +240,7 @@ def run_mlr_activity(stonybrook_df, use_p, use_t, use_sm, p_lags, t_lags, sm_lag
             features[f"T_lag{lag}"] = stonybrook_df["temp_F"].shift(lag)
     if use_sm:
         for lag in sm_lags:
-            features[f"SM_lag{lag}"] = stonybrook_df["sm_anom_cm"].shift(lag)
+            features[f"SM_lag{lag}"] = stonybrook_df["sm_anom_in"].shift(lag)
 
     X_full = pd.DataFrame(features)
     y_full = stonybrook_df["flow_af"]
